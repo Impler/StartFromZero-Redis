@@ -74,7 +74,7 @@ OK
 |12|MSET key value [key value...]|同时设置多个key-value对|
 |13|MSETNX key value [key value...]|同时设置多个key-value对，当且仅当所有key都不存在|
 |14|PSETEX key milliseconds value|以毫秒为单位设置key的过期时间|
-|15|INCR kye|将key中存储的数字值曾一|
+|15|INCR key|将key中存储的数字值曾一|
 |16|INCRBY key increment|将key所存储的值加上给定的浮点增量值|
 |17|INCRBYFLOAT key increment|将key所存储的值加上给定的浮点增量值|
 |18|DECR key|将key中存储的数字值减一|
@@ -82,40 +82,157 @@ OK
 |20|APPEND key value|如果key已经存在并且是一个字符串，APPEND命令将value追加在原来只的末尾|
 
 ## 4.2 哈希（Hash）
-
-
-
-
-||||
-||||
-||||
-||||
-||||
-||||
-||||
-||||
-||||
-||||
-
-
-
-
-
-
-
-
-
-
+Redis hash是一个string类型的field和value的映射表，hash特别适合用于存储对象。  
+Redis中每个hash可以存储2<sup>32</sup>-1个键值对。  
+```redis
+127.0.0.1:6379> HMSET stu1 name zhangsan age 12 score 90
+OK
+127.0.0.1:6379> HGETALL stu1
+1) "name"
+2) "zhangsan"
+3) "age"
+4) "12"
+5) "score"
+6) "90"
+```
 
 |序号|命令|描述|
 |:-|:-|:-|
-||||
-||||
-||||
-||||
-||||
-||||
-||||
-||||
-||||
-||||
+|1|HDEL key field1 [field2]|删除一个或多个哈希表字段|
+|2|HEXISTS key filed|查看hash表key中，指定的字段是否存在|
+|3|HGET key filed|获取存储在哈希表中指定字段的值|
+|4|HGETALL key|获取在哈希表中指定key的所有字段的值|
+|5|HINCRBY key field increment|为哈希表key中指定字段的整数值加上增量increment|
+|6|HINCRBYFLOAT key field increment |为哈希表key中的指定字段的浮点数值加上增量increment|
+|7|HKEYS key|获取所有哈希表中的字段|
+|8|HLEN key|获取哈希表中字段的数量|
+|9|HMGET key field1 [field2..]|获取所有给定字段的值|
+|10|HMSET key field1 value1 [field2 value2...]|同时将多个field-value对设置到hash表的key中|
+|11|HSET key field value|将哈希表key中的字段field的值设为value|
+|12|HSETNX key field value|只有在字段field不存在时，设置哈希表的字段值|
+|13|HVALS key|获取哈希表中所有的值|
+|14|HSCAN key cursor [MATCH pattern] [COUNT count]|迭代哈希表中的键值对|
+
+## 4.3 列表（List）
+Redis列表是简单的字符串列表，按照插入顺序排序。你可以添加一个元素到列表的头部（左边）或者尾部（右边）。  
+一个列表最多可以包含2<sup>32</sup>-1个元素。  
+示例：  
+```redis
+127.0.0.1:6379> LPUSH score 90
+(integer) 1
+127.0.0.1:6379> LPUSH score 99
+(integer) 2
+127.0.0.1:6379> LPUSH score 85
+(integer) 3
+127.0.0.1:6379> LRANGE score 0 3
+1) "85"
+2) "99"
+3) "90"
+```
+
+Redis常用列表命令：  
+
+|序号|命令|描述|
+|:-|:-|:-|
+|1|BLPOP key1 [key2] timeout|移除并获取列表的第一个元素，如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止|
+|2|BRPOP key1 [key2] timeout|移除并获取列表的最后一个元素，如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止|
+|3|BRPOPLPUSH source destination timeout|从列表中弹出一个值，将弹出的元素插入到另外一个列表中并返回它；如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止|
+|4|LINDEX key index|通过索引获取列表中的元素|
+|5|LINSERT key BEFORE|AFTER pivot value|在列表元素的前或后插入元素|
+|6|LLEN key|获取列表长度|
+|7|LPOP key|移出并获取列表的第一个元素|
+|8|LPUSH key value1 [value2]|将一个或多个值插入到列表头部|
+|9|LPUSHX key value|将一个或多个值插入到已存在的列表头部|
+|10|LRANGE key start stop|获取列表指定范围内的元素|
+|11|LREM key count value|移除列表元素|
+|12|LSET key index vlaue|通过所以设置列表元素的值|
+|13|LTRIM key start stop|对一个列表进行修剪，让列表只保留指定区间内的元素，其他元素将被删除|
+|14|RPOP key|移除并获取列表最后一个元素|
+|15|RPOPLPUSH source destination|移除列表的最后一个元素，并将该元素添加到另一个列表并返回|
+|16|RPUSH key value1 [value2]|在列表中添加一个或多个值|
+|17|RPUSHX key value|为已存在的列表添加值|
+
+## 4.4 集合（Set）
+Redis的Set是string类型的无序集合。集合成员是唯一的，不能重复。  
+Redis中集合是通过哈希表实现的，所以添加、删除、查找的复杂的都是O(1)。  
+集合中最大的成员数为2<sup>32</sup>-1。  
+示例：  
+```redis
+127.0.0.1:6379> SADD dbs redis
+(integer) 1
+127.0.0.1:6379> SADD dbs mongodb
+(integer) 1
+127.0.0.1:6379> SADD dbs mysql
+(integer) 1
+127.0.0.1:6379> SADD dbs mysql
+(integer) 0
+```
+Redis常用集合命令：  
+
+|序号|命令|描述|
+|:-|:-|:-|
+|1|SADD key memeber1 [menber2]|向集合中添加一个或多个成员|
+|2|SCARD key|获取集合的成员数|
+|3|SDIFF key1 [key2]|返回给定所有集合的差集|
+|4|SDIFFSTORE destination key1 [key2]|返回给定所有集合的差集并存储在destination中|
+|5|SINTER key1 [key2]|返回给定所有集合的交集|
+|6|SINTERSTORE destination key1 [key2]|返回给定所有集合的交集并存储在destination中|
+|7|SISMEMBER key member|判断member是否是集合key的成员|
+|8|SMEMBERS key|返回集合的所有成员|
+|9|SMOVE source destination member|将member元素从source集合移动到destination集合|
+|10|SPOP|移除并返回集合中的一个随机元素|
+|11|SRANDMEMBER key [count]|返回集合中一个或多个随机数|
+|12|SREM key member1 [member2]|移除集合中一个或多个成员|
+|13|SUNION key1 [key2]|返回所有给定集合的并集|
+|14|SUNIONSTORE destination key1 [key2]|所有给定集合的并集存储在destination集合中|
+|15|SSCAN key cursor [MATCH pattern] [COUNT count]|迭代集合中的元素|
+
+## 4.5 有序集合(sorted set)
+Redis有序集合和集合一样也是string类型元素的集合，且不允许重复的成员。  
+不同的是每个元素都会关联一个double类型的分数。redis正式通过分数来为集合中的成员进行从小到大排序的。  
+有序结合的成员是唯一的，但分数却可以重复。  
+集合是通过哈希表实现的，所以添加、删除、查找的复杂度都是O(1)。集合中的最大成员数数为2<sup>32</sup>-1。  
+示例：  
+```redis
+127.0.0.1:6379> ZADD lans 1 java
+(integer) 1
+127.0.0.1:6379> ZADD lans 2 javascript
+(integer) 1
+127.0.0.1:6379> ZADD lans 4 C
+(integer) 1
+127.0.0.1:6379> ZADD lans 3 Python
+(integer) 1
+127.0.0.1:6379> ZRANGE lans 0 4 WITHSCORES
+1) "java"
+2) "1"
+3) "javascript"
+4) "2"
+5) "Python"
+6) "3"
+7) "C"
+8) "4"
+```
+
+有序集合常用命令：  
+|序号|命令|描述|
+|:-|:-|:-|
+|1|ZADD key score1 member1 [score2 member2...]|向有序集合添加一个或多个数据成员，或者更新已存在成员的分数|
+|2|ZCARD key|获取有序集合的成员数|
+|3|ZCOUNT key min max|计算在有序集合中指定区间分数的成员数|
+|4|ZINCRBY key increment member|有序集合中对指定成员的分数加上增量increment|
+|5|ZINTERSTORE destination numkeys key1 [key2...]|计算给定的一个或多个有序集的交集并将结果集存储在新的有序集合key中|
+|6|ZLEXCOUNT key min max|在有序集合中计算指定字典区间内成员数量|
+|7|ZRANGE key start stop [WITHSCORES]|通过索引区间返回有序集合指定区间内的成员|
+|8|ZRANGEBYLEX key min max [LIMIT offset count]|通过字典区间返回有序集合的成员|
+|9|ZRANGEBYSCORE key min max [WITHSCORES] [LIMIT]|通过分数返回有序集合指定区间内的成员|
+|10|ZRANK key member|返回有序集合中指定成员的索引|
+|11|ZREM key member [member...]|移除有序集合中的一个过多个成员|
+|12|ZREMRANGEBYLEX key min max|移除有序集合中给定的字典区间的所有成员|
+|13|ZREMRANGEBYRANK key start stop|移除有序集合中给定的排名区间的所有成员|
+|14|ZREMRANGEBYSCORE key min max|移除有序集合中给定的分数区间的所有成员|
+|15|ZREVRANGE key start stop [WITHSCORES]|返回有序集中指定区间内的成员，通过索引，分数从高到低|
+|16|ZREVRANGEBYSCORE key max min [WITHSCORES]|返回有序集中指定分数区间内的成员，分数从高到低排序|
+|17|ZREVRANK key member|返回有序集合中指定成员的排名，有序集成员按分数值从高到低排序|
+|18|ZSCORE key member|返回有序集中，成员的分数值|
+|19|ZUNIONSTORE destination numkeys key [key...]|计算给定的一个或多个有序集的并集，并存储在新的key中|
+|20|ZSCAN key cursor [MATCH pattern] [COUNT count]|迭代有序集合中的元素（包括成员和分值）|
