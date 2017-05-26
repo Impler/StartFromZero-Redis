@@ -266,7 +266,7 @@ Redis 发布订阅（pub/sub）是一种消息通信模式：发送者（pub）�
 发布订阅命令：  
 
 |序号|命令|描述|
-|：-|：-|：-|
+|:-|:-|:-|
 |1|PSUBSCRIBE pattern [pattern...]|订阅一个或多个符合给定模式的频道|
 |2|PUBSUB subcommand [argument[argument ...]]|查看订阅与发布系统状态|
 |3|PUBLISH channel message|将消息发送到指定的频道|
@@ -304,7 +304,7 @@ QUEUED
 事务命令：  
 
 |序号|命令|描述|
-|：-|：-|：-|
+|:-|:-|:-|
 |1|DISCARD|取消事务，放弃执行事务块内的所有命令|
 |2|EXEC|执行所有事务块内的所有命令|
 |3|MULTI|标记一个事务快的开始|
@@ -317,7 +317,7 @@ Redis脚本使用Lua解释器来执行脚本。Redis2.6版本通过内嵌支持L
 脚本常用命令：  
 
 |序号|命令|描述|
-|：-|：-|：-|
+|:-|:-|:-|
 |1|EVAL script numkeys key [key...] arg [arg...]|执行Lua脚本|
 |2|EVALSHA sha1 numkeys key [key...] arg [arg...]|执行Lua脚本|
 |3|SCRIPT EXISTS script [script]|查看指定的脚本是否已经被保存在缓存当中|
@@ -329,7 +329,7 @@ Redis脚本使用Lua解释器来执行脚本。Redis2.6版本通过内嵌支持L
 Redis连接命令用于连接redis服务。  
 
 |序号|命令|描述|
-|：-|：-|：-|
+|:-|:-|:-|
 |1|AUTH password|验证密码是否正确|
 |2|ECHO message|打印字符串|
 |3|PING|查看服务器是否运行|
@@ -341,7 +341,7 @@ Redis连接命令用于连接redis服务。
 Redis服务器命令主要用于管理redis服务。  
 
 |序号|命令|描述|
-|：-|：-|：-|
+|:-|:-|:-|
 |1|BGREWRITEAOP|异步执行一个AOF（AppendOnly File）文件重写操作|
 |2|BGSAVE|异步保存当前数据库的数据到磁盘|
 |3|CLIENT KILL [ip:port] [ID clientId]|关闭客户端连接|
