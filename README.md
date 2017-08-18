@@ -12,15 +12,24 @@ Redis的特点：
 # 2 安装和配置
 # 3 命令
 Redis命令用于在redis服务上执行操作。要在redis服务上执行命令需要一个redis客户端。  
+启动redis服务器端：  
+```redis
+# 在redis 安装目录输入命令redis-server, 启动redis-server
+redis-server
+```
+![启动redis server](resources/image/启动server.png)  
+
 启动redis客户端：  
 ```redis
-# 输入命令redis-cli连接到本地redis服务
+# 在redis安装目录，输入命令redis-cli连接到本地redis服务
 redis-cli
 # 执行ping命令，检测redis服务是否启动
 ping
-
 # 响应PONG表示启动正常
+PONG
 ```
+![启动redis client](resources/image/启动client.png)  
+
 如果需要在远程redis服务商执行命令，需要使用redis-cli连接远程redis服务：  
 ```redis
 redis-cli -h hostIp -p port -a password
